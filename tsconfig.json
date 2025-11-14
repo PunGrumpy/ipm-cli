@@ -3,6 +3,7 @@
     "target": "ES2024",
     "useDefineForClassFields": true,
     "lib": ["ES2024"],
+    "types": ["node"],
     "module": "ESNext",
     "skipLibCheck": true,
     /* Module resolution */
