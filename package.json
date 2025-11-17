@@ -20,6 +20,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@inkdropapp/ipm": "^1.0.0-beta.1",
     "@inkdropapp/logger": "^4.0.0",
     "@napi-rs/keyring": "^1.2.0",
     "commander": "^14.0.2",
