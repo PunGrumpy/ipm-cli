@@ -279,5 +279,39 @@ export async function main() {
       }
     })
 
+  program
+    .command('publish [path]')
+    .description('Publish a package to the registry')
+    .option(
+      '--dry-run',
+      'Simulate the publish process without actually publishing'
+    )
+    .action(async (path: string | undefined, options: { dryRun?: boolean }) => {
+      await ensureAuthenticated()
+      const ipm = getIPM()
+
+      try {
+        const pathStr = path ? ` from ${path}` : ''
+        if (options.dryRun) {
+          console.log(chalk.cyan(`Running publish in dry-run mode${pathStr}...`))
+        } else {
+          console.log(chalk.cyan(`Publishing package${pathStr}...`))
+        }
+
+        // Type assertion needed as the type definition is outdated but the README shows path is supported
+        await ipm.publish({ dryrun: options.dryRun || false, path } as any)
+
+        if (options.dryRun) {
+          console.log(chalk.green('✓ Dry-run completed successfully!'))
+          console.log(chalk.gray('No changes were made to the registry.'))
+        } else {
+          console.log(chalk.green('✓ Package published successfully!'))
+        }
+      } catch (error) {
+        console.error(chalk.red('Failed to publish package:'), error)
+        process.exit(1)
+      }
+    })
+
   await program.parseAsync(process.argv)
 }
