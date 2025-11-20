@@ -338,5 +338,55 @@ export async function main() {
       }
     })
 
+  program
+    .command('unpublish <package[@version]>')
+    .description('Unpublish a package or specific version from the registry')
+    .option('-v, --version <version>', 'Specific version to unpublish')
+    .action(async (packageName: string, options: { version?: string }) => {
+      await ensureAuthenticated()
+      const ipm = getIPM()
+
+      try {
+        // Parse package@version format
+        let name = packageName
+        let version = options.version
+
+        if (packageName.includes('@')) {
+          const parts = packageName.split('@')
+          name = parts[0]
+          version = parts[1] || version
+        }
+
+        const versionStr = version ? `@${version}` : ''
+        const action = version ? 'version' : 'entire package'
+
+        console.log(
+          chalk.yellow(
+            `Warning: This will unpublish ${name}${versionStr} (${action}) from the registry.`
+          )
+        )
+        const confirmation = await prompt(
+          'Are you sure you want to continue? (y/N): '
+        )
+
+        if (
+          confirmation.toLowerCase() !== 'y' &&
+          confirmation.toLowerCase() !== 'yes'
+        ) {
+          console.log(chalk.yellow('Unpublish cancelled.'))
+          return
+        }
+
+        console.log(chalk.cyan(`Unpublishing ${name}${versionStr}...`))
+        await ipm.unpublish(name, version ? { version } : undefined)
+        console.log(
+          chalk.green(`✓ Successfully unpublished ${name}${versionStr}`)
+        )
+      } catch (error) {
+        console.error(chalk.red(`Failed to unpublish ${packageName}:`), error)
+        process.exit(1)
+      }
+    })
+
   await program.parseAsync(process.argv)
 }

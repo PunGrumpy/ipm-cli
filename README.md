@@ -131,6 +131,23 @@ ipm publish --dry-run
 ipm publish ./path/to/package --dry-run
 ```
 
+#### Unpublish a package
+
+```bash
+# Unpublish entire package
+ipm unpublish <package-name>
+
+# Unpublish specific version (package@version format)
+ipm unpublish <package-name>@1.2.3
+
+# Unpublish specific version (--version flag)
+ipm unpublish <package-name> --version 1.2.3
+# or
+ipm unpublish <package-name> -v 1.2.3
+```
+
+**Warning**: This command will prompt for confirmation before unpublishing. Unpublishing a package or version is a destructive action and cannot be undone.
+
 ### Configuration
 
 Reconfigure authentication (e.g., to use a different account):
